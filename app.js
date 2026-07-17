@@ -4,7 +4,10 @@ const port = 8000;
 const mongoose = require("mongoose");
 app.use(express.urlencoded({ extended: true }));
 const Mydata = require("./models/mydataSchema");
+<<<<<<< HEAD
 app.set("view engine", "ejs");
+=======
+>>>>>>> 0e6bd1d07c46ee66983f9227558306874365b590
 
 app.get("/", (req, res) => {
   Mydata.find()
