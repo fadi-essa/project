@@ -4,21 +4,41 @@ const port = 8000;
 const mongoose = require("mongoose");
 app.use(express.urlencoded({ extended: true }));
 const Mydata = require("./models/mydataSchema");
-<<<<<<< HEAD
 app.set("view engine", "ejs");
-=======
->>>>>>> 0e6bd1d07c46ee66983f9227558306874365b590
+app.use(express.static(`public`));
+
+//Auto Refresh
+const path = require("path");
+const livereload = require("livereload");
+const liveReloadServer = livereload.createServer();
+liveReloadServer.watch(path.join(__dirname, "public"));
+
+const connectLivereload = require("connect-livereload");
+app.use(connectLivereload());
+
+liveReloadServer.server.once("connection", () => {
+  setTimeout(() => {
+    liveReloadServer.refresh("/");
+  }, 100);
+});
 
 app.get("/", (req, res) => {
-  Mydata.find()
-    .then((result) => {
-      res.render("home", { mytitle: "Home Page" ,arr : result });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  
+  res.render("index", {});
 });
+
+app.get("/user/add.html", (req, res) => {
+  res.render("user/add", {});
+});
+
+app.get("/user/view.html", (req, res) => {
+  res.render("user/view", {});
+});
+
+app.get("/user/edit.html", (req, res) => {
+  res.render("user/edit", {});
+});
+
+
 
 app.get("/index.html", (req, res) => {
   res.send("<h1>Data has been sent and saved successfully!</h1>");
@@ -26,6 +46,7 @@ app.get("/index.html", (req, res) => {
 
 const dns = require("dns");
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
 
 mongoose
   .connect(
@@ -40,15 +61,4 @@ mongoose
     console.log(err);
   });
 
-app.post("/", (req, res) => {
-  const newData = new Mydata(req.body);
 
-  newData
-    .save()
-    .then(() => {
-      res.redirect("index.html");
-    })
-    .catch((err) => {
-      console.error("Failed to save data:", err);
-    });
-});
